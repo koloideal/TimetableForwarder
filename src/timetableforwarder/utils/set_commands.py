@@ -16,6 +16,7 @@ async def set_commands(bot: Bot, config: Config):
         BotCommand(command="ban_user", description="🚫 Забанить пользователя"),
         BotCommand(command="unban_user", description="✅ Разбанить пользователя"),
         BotCommand(command="list_banned", description="📜 Список заблокированных"),
+        BotCommand(command="list_all_users", description="👥 Список всех пользователей"),
     ]
 
     await bot.set_my_commands(

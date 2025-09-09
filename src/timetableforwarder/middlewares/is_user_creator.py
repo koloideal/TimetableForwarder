@@ -20,12 +20,12 @@ class RejectNotCreatorMiddleware(BaseMiddleware):
         
         user_id: int = event.from_user.id
 
-        creator_commands = ['/ban_user', '/unban_user', '/list_banned']
+        creator_commands = ['/ban_user', '/unban_user', '/list_banned', '/list_all_users']
 
         if event.text.strip() in creator_commands:
             if user_id == creator_id:
                 return await handler(event, data)
             else:
-                await event.answer("Unknwon command, enter /start")
+                await event.answer("❌ <b>Недостаточно прав</b>\n\nЭта команда доступна только создателю. Используйте /start для начала работы.", parse_mode="HTML")
         else:
             return await handler(event, data)

@@ -14,13 +14,11 @@ class UsersDAO:
         self,
         user_id: int,
         username: Optional[str] = None,
-        is_subscribed: bool = False,
         subscribed_group: Optional[int] = None,
     ) -> None:
         stmt = pg_insert(User).values(
             user_id=user_id,
             username=username,
-            is_subscribed=is_subscribed,
             subscribed_group=subscribed_group,
         ).on_conflict_do_nothing(
             index_elements=['user_id'] 
@@ -40,6 +38,11 @@ class UsersDAO:
     
     async def get_banned_users(self) -> list[User]:
         query = select(User).where(User.is_banned == True)
+        result = await self.session.execute(query)
+        return result.scalars().all()
+
+    async def get_all_users(self) -> list[User]:
+        query = select(User)
         result = await self.session.execute(query)
         return result.scalars().all()
 

@@ -4,11 +4,10 @@ from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
 from alembic import context
-from dotenv import load_dotenv
 from timetableforwarder.database.database_models import Base
+from timetableforwarder.utils.get_config import load_config
 
 import asyncio
-import os
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -19,19 +18,8 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-load_dotenv()
-
-POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
-POSTGRES_USER = os.environ["POSTGRES_USER"]
-POSTGRES_DB = os.environ["POSTGRES_DB"]
-POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost")
-POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
-DATABASE_CONNECTION_URL = (
-    f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
-    f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
-)
-
-config.set_main_option("sqlalchemy.url", DATABASE_CONNECTION_URL)
+app_config = load_config()
+config.set_main_option("sqlalchemy.url", app_config.database_url)
 
 # add your model's MetaData object here
 # for 'autogenerate' support

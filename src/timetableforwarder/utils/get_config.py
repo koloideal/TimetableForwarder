@@ -1,8 +1,6 @@
 from dataclasses import dataclass
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
+import tomli
+from pathlib import Path
 
 @dataclass
 class Config:
@@ -10,22 +8,25 @@ class Config:
     database_url: str
     creator_id: int
     plpx_key: str
+    groups: list[int]
 
 def load_config() -> Config:
-    bot_token = os.environ["BOT_TOKEN"]
-
-    plpx_key = os.environ["PPLX_API_KEY"]
-
-    creator_id = int(os.environ["CREATOR_ID"])
-
-    postgres_password = os.environ["POSTGRES_PASSWORD"]
-    postgres_user = os.environ["POSTGRES_USER"]
-    postgres_db = os.environ["POSTGRES_DB"]
-    database_url = f"postgresql+asyncpg://{postgres_user}:{postgres_password}@localhost:5432/{postgres_db}"
-
+    config_path = Path("secret_data/config.toml")
+    
+    with open(config_path, "rb") as f:
+        config_data = tomli.load(f)
+    
+    bot_config = config_data["bot"]
+    db_config = config_data["database"]
+    external_config = config_data["external"]
+    groups_config = config_data["groups"]
+    
+    database_url = f"postgresql+asyncpg://{db_config['postgres_user']}:{db_config['postgres_password']}@localhost:5432/{db_config['postgres_db']}"
+    
     return Config(
-        bot_token=bot_token,
+        bot_token=bot_config["token"],
         database_url=database_url,
-        plpx_key=plpx_key,
-        creator_id=creator_id
+        plpx_key=external_config["pplx_api_key"],
+        creator_id=bot_config["creator_id"],
+        groups=groups_config["list"]
     )
