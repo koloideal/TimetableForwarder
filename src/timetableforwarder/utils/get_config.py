@@ -14,7 +14,7 @@ class Config:
 def load_config() -> Config:
     bot_token = os.environ["BOT_TOKEN"]
 
-    plpx_key = os.environ["PLPX_API_KEY"]
+    plpx_key = os.environ["PPLX_API_KEY"]
 
     creator_id = int(os.environ["CREATOR_ID"])
 

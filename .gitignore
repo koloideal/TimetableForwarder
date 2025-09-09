@@ -11,3 +11,4 @@ wheels/
 
 # secret data
 .env
+secret_data
