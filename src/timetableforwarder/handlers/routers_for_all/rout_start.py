@@ -1,9 +1,9 @@
 from aiogram.types import Message
-from findlybot.database.database_models import Admin, UserConfig, User
-from findlybot.database.dao.users_dao import UsersDAO
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
-from findlybot.database.dao.admins_dao import AdminsDAO
-from findlybot.utils.get_config import GetConfig
+from timetableforwarder.database.database_models import Admin, UserConfig, User
+from timetableforwarder.database.dao.users_dao import UsersDAO
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.dao.admins_dao import AdminsDAO
+from timetableforwarder.utils.get_config import GetConfig
 import polib
 
 en_msgs = polib.pofile("locales/en/rout_start.po")

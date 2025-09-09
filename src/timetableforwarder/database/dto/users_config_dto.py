@@ -1,4 +1,4 @@
-from findlybot.database.database_models import UserConfig
+from timetableforwarder.database.database_models import UserConfig
 
 
 class UsersConfigDTO:

@@ -1,9 +1,9 @@
 from aiogram.types import Message
-from findlybot.database.database_models import UserConfig
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.database_models import UserConfig
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
 from aiogram.fsm.context import FSMContext
-from findlybot.states.user_states import WaitQuery
-from findlybot.utils.check_responses import check_responses
+from timetableforwarder.states.user_states import WaitQuery
+from timetableforwarder.utils.check_responses import check_responses
 import polib
 
 en_msgs = polib.pofile("locales/en/rout_search.po")

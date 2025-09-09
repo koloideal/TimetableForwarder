@@ -6,9 +6,9 @@ from datetime import datetime
 import json
 import os
 
-from findlybot.database.database_models import UserConfig, Admin, SerializerDatabaseModels
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
-from findlybot.database.dao.admins_dao import AdminsDAO
+from timetableforwarder.database.database_models import UserConfig, Admin, SerializerDatabaseModels
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.dao.admins_dao import AdminsDAO
 
 if typing.TYPE_CHECKING:
     from _typeshed import SupportsWrite

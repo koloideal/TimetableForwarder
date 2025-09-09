@@ -1,8 +1,8 @@
 import polib
 from aiogram import types
 
-from findlybot.database.database_models import UserConfig
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.database_models import UserConfig
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
 
 
 en_msgs = polib.pofile("locales/en/unknown_command.po")

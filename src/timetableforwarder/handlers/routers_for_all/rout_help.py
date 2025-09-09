@@ -1,7 +1,7 @@
 from aiogram.types import Message
 import polib
-from findlybot.database.database_models import UserConfig
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.database_models import UserConfig
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
 
 en_msgs = polib.pofile("locales/en/rout_help.po")
 ru_msgs = polib.pofile("locales/ru/rout_help.po")

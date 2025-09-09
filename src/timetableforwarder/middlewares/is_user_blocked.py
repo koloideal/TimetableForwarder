@@ -1,9 +1,9 @@
 from typing import Callable, Dict, Any, Awaitable
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message
-from findlybot.database.database_models import UserConfig, BannedUser
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
-from findlybot.database.dao.banned_users_dao import BannedUsersDAO
+from timetableforwarder.database.database_models import UserConfig, BannedUser
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.dao.banned_users_dao import BannedUsersDAO
 import polib
 
 

@@ -1,9 +1,9 @@
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from findlybot.database.database_models import UserConfig, Admin
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
-from findlybot.utils.get_config import GetConfig
-from findlybot.database.dao.admins_dao import AdminsDAO
+from timetableforwarder.database.database_models import UserConfig, Admin
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.utils.get_config import GetConfig
+from timetableforwarder.database.dao.admins_dao import AdminsDAO
 import polib
 from polib import POFile
 

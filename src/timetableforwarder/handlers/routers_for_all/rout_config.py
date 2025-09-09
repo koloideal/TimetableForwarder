@@ -1,8 +1,8 @@
 import polib
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from findlybot.database.database_models import UserConfig
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.database_models import UserConfig
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
 
 en_msgs = polib.pofile("locales/en/rout_config.po")
 ru_msgs = polib.pofile("locales/ru/rout_config.po")

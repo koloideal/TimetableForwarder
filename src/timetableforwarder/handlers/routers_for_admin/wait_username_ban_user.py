@@ -3,13 +3,13 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 import polib
 from polib import POFile
-from findlybot.database.dao.banned_users_dao import BannedUsersDAO
-from findlybot.database.database_models import UserConfig, Admin, BannedUser
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
-from findlybot.database.dao.admins_dao import AdminsDAO
-from findlybot.utils.get_config import GetConfig
-from findlybot.utils.del_user_searching_data import del_user_searching_data
-from findlybot.exceptions.users_exceptions import AttemptToBanAdminOrCreator
+from timetableforwarder.database.dao.banned_users_dao import BannedUsersDAO
+from timetableforwarder.database.database_models import UserConfig, Admin, BannedUser
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.dao.admins_dao import AdminsDAO
+from timetableforwarder.utils.get_config import GetConfig
+from timetableforwarder.utils.del_user_searching_data import del_user_searching_data
+from timetableforwarder.exceptions.users_exceptions import AttemptToBanAdminOrCreator
 
 
 en_msgs: POFile = polib.pofile("locales/en/wait_username_ban_user.po")

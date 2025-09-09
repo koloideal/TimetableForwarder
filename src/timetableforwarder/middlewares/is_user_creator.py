@@ -1,10 +1,10 @@
 from typing import Callable, Dict, Any, Awaitable
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message
-from findlybot.database.database_models import UserConfig
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.database_models import UserConfig
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
 import polib
-from findlybot.utils.get_config import GetConfig
+from timetableforwarder.utils.get_config import GetConfig
 
 
 config: dict = GetConfig.get_bot_config()

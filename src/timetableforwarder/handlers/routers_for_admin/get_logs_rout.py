@@ -3,8 +3,8 @@ from aiogram.types import Message
 from aiogram.types import FSInputFile
 from datetime import datetime
 from aiogram.exceptions import TelegramBadRequest, TelegramNetworkError
-from findlybot.database.database_models import UserConfig
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.database_models import UserConfig
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
 import polib
 from polib import POFile
 

@@ -1,4 +1,4 @@
-from findlybot.database.database_models import Admin
+from timetableforwarder.database.database_models import Admin
 
 
 class AdminsDTO:

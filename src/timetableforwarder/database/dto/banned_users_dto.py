@@ -1,4 +1,4 @@
-from findlybot.database.database_models import BannedUser
+from timetableforwarder.database.database_models import BannedUser
 
 
 class BannedUsersDTO:

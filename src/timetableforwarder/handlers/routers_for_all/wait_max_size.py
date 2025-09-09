@@ -1,7 +1,7 @@
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from findlybot.database.database_models import UserConfig
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.database_models import UserConfig
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
 from html import escape
 import polib
 

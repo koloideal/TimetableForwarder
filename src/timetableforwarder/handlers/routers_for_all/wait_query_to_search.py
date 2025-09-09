@@ -4,15 +4,15 @@ import re
 import time
 import typing
 import polib
-from findlybot.database.database_models import UserConfig
-from findlybot.exceptions.request_exceptions import TooLongQueryForSearchError
-from findlybot.handlers.search_command_funcs.api_data_to_dump import api_data_to_dump
-from findlybot.handlers.search_command_funcs.forming_response import forming_response
+from timetableforwarder.database.database_models import UserConfig
+from timetableforwarder.exceptions.request_exceptions import TooLongQueryForSearchError
+from timetableforwarder.handlers.search_command_funcs.api_data_to_dump import api_data_to_dump
+from timetableforwarder.handlers.search_command_funcs.forming_response import forming_response
 from aiogram.types import Message
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
 from aiogram.fsm.context import FSMContext
 from httpx import Response, HTTPError
-from findlybot.get_api_data.get_api_data import get_api_data
+from timetableforwarder.get_api_data.get_api_data import get_api_data
 import json
 if typing.TYPE_CHECKING:
     from _typeshed import SupportsWrite

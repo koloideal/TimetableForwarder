@@ -1,31 +1,31 @@
-import tomllib
-from dotenv import load_dotenv
+from dataclasses import dataclass
 import os
-
+from dotenv import load_dotenv
 
 load_dotenv()
 
+@dataclass
+class Config:
+    bot_token: str
+    database_url: str
+    creator_id: int
+    plpx_key: str
 
-class GetConfig:
-    @staticmethod
-    def get_api_config() -> dict:
-        with open("secret_data/config.toml", "rb") as config:
-            config = tomllib.load(config)["API"]
+def load_config() -> Config:
+    bot_token = os.environ["BOT_TOKEN"]
 
-        return config
+    plpx_key = os.environ["PLPX_API_KEY"]
 
-    @staticmethod
-    def get_bot_config() -> dict:
-        with open("secret_data/config.toml", "rb") as config:
-            config = tomllib.load(config)["Bot"]
+    creator_id = int(os.environ["CREATOR_ID"])
 
-        return config
+    postgres_password = os.environ["POSTGRES_PASSWORD"]
+    postgres_user = os.environ["POSTGRES_USER"]
+    postgres_db = os.environ["POSTGRES_DB"]
+    database_url = f"postgresql+psycopg://{postgres_user}:{postgres_password}@db:5432/{postgres_db}"
 
-    @staticmethod
-    def get_database_config() -> dict:
-        with open("secret_data/config.toml", "rb") as config:
-            config = tomllib.load(config)["Database"]
-
-        config['password'] = os.getenv('MYSQL_PASSWORD')
-
-        return config
+    return Config(
+        bot_token=bot_token,
+        database_url=database_url,
+        plpx_key=plpx_key,
+        creator_id=creator_id
+    )

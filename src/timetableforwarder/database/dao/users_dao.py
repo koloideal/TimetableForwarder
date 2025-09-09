@@ -1,5 +1,5 @@
-from findlybot.database.connect_to_database import DatabaseConnection
-from findlybot.database.database_models import User
+from timetableforwarder.database.connect_to_database import DatabaseConnection
+from timetableforwarder.database.database_models import User
 
 
 class UsersDAO:

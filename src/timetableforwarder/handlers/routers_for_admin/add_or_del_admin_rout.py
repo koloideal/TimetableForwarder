@@ -1,8 +1,8 @@
 from aiogram import types
-from findlybot.database.database_models import UserConfig
-from findlybot.states.admin_states import AdminState
+from timetableforwarder.database.database_models import UserConfig
+from timetableforwarder.states.admin_states import AdminState
 from aiogram.fsm.context import FSMContext
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
 import polib
 from polib import POFile
 

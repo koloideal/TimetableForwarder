@@ -12,11 +12,11 @@ from aiogram.types import (
 )
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from findlybot.database.database_models import UserConfig
-from findlybot.states.user_states import WaitMaxSize
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
-from findlybot.utils.reformat_name import reformat_name
-from findlybot.handlers.custom_callback_data.swipe_items_callback_data import SwipeItemsCallbackData
+from timetableforwarder.database.database_models import UserConfig
+from timetableforwarder.states.user_states import WaitMaxSize
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.utils.reformat_name import reformat_name
+from timetableforwarder.handlers.custom_callback_data.swipe_items_callback_data import SwipeItemsCallbackData
 
 
 en_msgs = polib.pofile("locales/en/callback_query.po")

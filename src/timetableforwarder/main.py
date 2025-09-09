@@ -1,21 +1,20 @@
 from logging import Logger
 from aiogram.client.session.aiohttp import AiohttpSession
-from findlybot.utils.make_dirs import make_dirs
+from timetableforwarder.utils.make_dirs import make_dirs
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.bot import DefaultBotProperties
 from aiogram.enums.parse_mode import ParseMode
 from aiogram import Bot, Dispatcher
 import asyncio
-from findlybot.utils.get_config import GetConfig
-from findlybot.utils.initial_database_setup import initial_database_setup
-from findlybot.utils.create_loggers import create_main_logger, create_action_logger
+from timetableforwarder.utils.get_config import Config, load_config
+from timetableforwarder.utils.create_loggers import create_main_logger, create_action_logger
 
 
-config: dict = GetConfig.get_bot_config()
-api_token: str = config["Config"]["api_token"]
+config: Config = load_config()
+bot_token: str = config.bot_token
 
 session = AiohttpSession()
-bot: Bot = Bot(token=api_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML), session=session)
+bot: Bot = Bot(token=bot_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML), session=session)
 storage: MemoryStorage = MemoryStorage()
 dp: Dispatcher = Dispatcher(storage=storage)
 
@@ -25,11 +24,10 @@ action_logger: Logger = create_action_logger()
 
 async def main() -> None:
     make_dirs()
-    initial_database_setup()
 
-    from findlybot.handlers.routers import router
+    from timetableforwarder.handlers.routers import router
 
-    main_logger.warning("Starting FindlyBot...")
+    main_logger.warning("Starting TimetableForwarder...")
     action_logger.critical("Starting logging actions...")
     dp.include_router(router)
 
@@ -42,5 +40,5 @@ async def main() -> None:
     exit()
 
 if __name__ == "__main__":
-    print("\n\033[1m\033[30m\033[44m {} \033[0m".format("Starting FindlyBot..."))
+    print("\n\033[1m\033[30m\033[44m {} \033[0m".format("Starting TimetableForwarder..."))
     asyncio.run(main())

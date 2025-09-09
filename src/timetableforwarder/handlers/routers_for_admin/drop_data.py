@@ -2,11 +2,11 @@ from logging import Logger
 from aiogram.types import Message
 from polib import POFile, pofile
 
-from findlybot.database.database_models import UserConfig
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
-from findlybot.utils.del_data_dirs import del_data_dirs
-from findlybot.utils.make_dirs import make_dirs
-from findlybot.utils.create_loggers import create_action_logger, create_main_logger
+from timetableforwarder.database.database_models import UserConfig
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.utils.del_data_dirs import del_data_dirs
+from timetableforwarder.utils.make_dirs import make_dirs
+from timetableforwarder.utils.create_loggers import create_action_logger, create_main_logger
 
 
 en_msgs: POFile = pofile("locales/en/drop_data.po")

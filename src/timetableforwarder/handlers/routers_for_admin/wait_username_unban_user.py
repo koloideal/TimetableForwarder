@@ -1,9 +1,9 @@
 from logging import Logger, getLogger
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from findlybot.database.database_models import BannedUser, UserConfig
-from findlybot.database.dao.banned_users_dao import BannedUsersDAO
-from findlybot.database.dao.users_config_dao import UsersConfigDAO
+from timetableforwarder.database.database_models import BannedUser, UserConfig
+from timetableforwarder.database.dao.banned_users_dao import BannedUsersDAO
+from timetableforwarder.database.dao.users_config_dao import UsersConfigDAO
 import polib
 from polib import POFile
 

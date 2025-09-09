@@ -2,33 +2,33 @@ from aiogram import F, Router
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
-from findlybot.handlers.routers_for_all.rout_config import config_rout
-from findlybot.handlers.routers_for_all.rout_help import button_to_help_rout
-from findlybot.handlers.routers_for_all.rout_start import start_rout
-from findlybot.handlers.routers_for_admin.add_or_del_admin_rout import add_or_del_admin_rout
-from findlybot.handlers.routers_for_admin.ban_or_unban_user_rout import ban_or_unban_user_rout
-from findlybot.handlers.routers_for_admin.wait_username_add_admin import get_username_for_add_admin_rout
-from findlybot.handlers.routers_for_admin.wait_username_del_admin import get_username_for_del_admin_rout
-from findlybot.handlers.routers_for_admin.wait_username_ban_user import get_username_for_ban_user_rout
-from findlybot.handlers.routers_for_admin.wait_username_unban_user import get_username_for_unban_user_rout
-from findlybot.handlers.routers_for_admin.get_logs_rout import get_logs_rout
-from findlybot.handlers.routers_for_admin.get_admins_rout import get_admins_rout
-from findlybot.handlers.routers_for_admin.drop_data import drop_data_rout
-from findlybot.states.admin_states import AdminState
-from findlybot.states.user_states import WaitQuery, WaitMaxSize
-from findlybot.handlers.routers_for_all.rout_search import search_rout
-from findlybot.handlers.routers_for_all.unknown_command import unknown_command
-from findlybot.handlers.routers_for_all.wait_query_to_search import get_query_to_search_rout
-from findlybot.handlers.routers_for_all.wait_max_size import get_max_size_rout
+from timetableforwarder.handlers.routers_for_all.rout_config import config_rout
+from timetableforwarder.handlers.routers_for_all.rout_help import button_to_help_rout
+from timetableforwarder.handlers.routers_for_all.rout_start import start_rout
+from timetableforwarder.handlers.routers_for_admin.add_or_del_admin_rout import add_or_del_admin_rout
+from timetableforwarder.handlers.routers_for_admin.ban_or_unban_user_rout import ban_or_unban_user_rout
+from timetableforwarder.handlers.routers_for_admin.wait_username_add_admin import get_username_for_add_admin_rout
+from timetableforwarder.handlers.routers_for_admin.wait_username_del_admin import get_username_for_del_admin_rout
+from timetableforwarder.handlers.routers_for_admin.wait_username_ban_user import get_username_for_ban_user_rout
+from timetableforwarder.handlers.routers_for_admin.wait_username_unban_user import get_username_for_unban_user_rout
+from timetableforwarder.handlers.routers_for_admin.get_logs_rout import get_logs_rout
+from timetableforwarder.handlers.routers_for_admin.get_admins_rout import get_admins_rout
+from timetableforwarder.handlers.routers_for_admin.drop_data import drop_data_rout
+from timetableforwarder.states.admin_states import AdminState
+from timetableforwarder.states.user_states import WaitQuery, WaitMaxSize
+from timetableforwarder.handlers.routers_for_all.rout_search import search_rout
+from timetableforwarder.handlers.routers_for_all.unknown_command import unknown_command
+from timetableforwarder.handlers.routers_for_all.wait_query_to_search import get_query_to_search_rout
+from timetableforwarder.handlers.routers_for_all.wait_max_size import get_max_size_rout
 from .callback_query import (
     callback_query_swipe_items,
     callback_query_change_config,
     callback_query_max_size
 )
-from findlybot.handlers.custom_callback_data.swipe_items_callback_data import SwipeItemsCallbackData
-from findlybot.middlewares.is_user_blocked import RejectBlockedUserMiddleware
-from findlybot.middlewares.is_user_admin import RejectNotAdminMiddleware
-from findlybot.middlewares.is_user_creator import RejectNotCreatorMiddleware
+from timetableforwarder.handlers.custom_callback_data.swipe_items_callback_data import SwipeItemsCallbackData
+from timetableforwarder.middlewares.is_user_blocked import RejectBlockedUserMiddleware
+from timetableforwarder.middlewares.is_user_admin import RejectNotAdminMiddleware
+from timetableforwarder.middlewares.is_user_creator import RejectNotCreatorMiddleware
 
 
 router: Router = Router()
