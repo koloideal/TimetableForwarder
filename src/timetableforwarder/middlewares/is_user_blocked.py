@@ -25,7 +25,8 @@ class RejectBlockedUserMiddleware(BaseMiddleware):
         if user_id in banned_users_ids:
             await event.answer(
                 "🚫 <b>Вы заблокированы</b>\n\n"
-                "Ваш доступ к боту ограничен. Для разблокировки обратитесь к создателю @kolo_id",
+                "Ваш доступ к боту ограничен. Для разблокировки обратитесь к создателю @kolo_id\n\n"
+                "<i>made by kolo</i>",
                 parse_mode="HTML",
                 disable_web_page_preview=True,
             )

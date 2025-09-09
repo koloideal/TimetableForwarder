@@ -26,6 +26,6 @@ class RejectNotCreatorMiddleware(BaseMiddleware):
             if user_id == creator_id:
                 return await handler(event, data)
             else:
-                await event.answer("❌ <b>Недостаточно прав</b>\n\nЭта команда доступна только создателю. Используйте /start для начала работы.", parse_mode="HTML")
+                await event.answer("❌ <b>Недостаточно прав</b>\n\nЭта команда доступна только создателю. Используйте /start для начала работы.\n\n<i>made by kolo</i>", parse_mode="HTML")
         else:
             return await handler(event, data)

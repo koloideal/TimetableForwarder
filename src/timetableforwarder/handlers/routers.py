@@ -14,6 +14,7 @@ from timetableforwarder.handlers.routers_for_all.rout_start import start_rout
 from timetableforwarder.handlers.routers_for_admin.ban_or_unban_user_rout import ban_or_unban_user_rout
 from timetableforwarder.handlers.routers_for_all.unknown_command import unknown_command
 from timetableforwarder.handlers.routers_for_all.subscriptions import open_config, select_group, select_off
+from timetableforwarder.handlers.routers_for_all.photo_handler import handle_channel_photo
 from timetableforwarder.middlewares.is_user_blocked import RejectBlockedUserMiddleware
 from timetableforwarder.middlewares.is_user_creator import RejectNotCreatorMiddleware
 from timetableforwarder.states.admin_states import AdminState
@@ -44,7 +45,6 @@ async def unban_user_routing(message: Message, state: FSMContext) -> None:
 async def get_username_for_ban_user(message: Message, state: FSMContext, users_dao: FromDishka[UsersDAO]) -> None:
     await get_username_for_ban_user_rout(message, state, users_dao)
 
-
 @router.message(AdminState.waiting_for_unban_user)
 async def get_username_for_unban_user(message: Message, state: FSMContext, users_dao: FromDishka[UsersDAO]) -> None:
     await get_username_for_unban_user_rout(message, state, users_dao)
@@ -63,16 +63,16 @@ async def cfg_open_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO]) -
 
 @router.callback_query(F.data.startswith("cfg_group:"))
 async def cfg_group_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO]) -> None:
-    try:
-        group = int(cb.data.split(":", 1)[1])
-    except Exception:
-        await cb.answer()
-        return
+    group = int(cb.data.split(":", 1)[1])
     await select_group(cb, users_dao, group)
 
 @router.callback_query(F.data == "cfg_off")
 async def cfg_off_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO]) -> None:
     await select_off(cb, users_dao)
+
+@router.channel_post(F.chat.id == TARGET_CHANNEL_ID, F.photo)
+async def photo_routing(message: Message) -> None:
+    await handle_channel_photo(message)
 
 @router.message()
 async def unknown_command_routing(message: Message) -> None:

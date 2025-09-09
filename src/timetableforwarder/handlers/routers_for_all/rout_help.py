@@ -16,7 +16,8 @@ async def help_rout(message: Message) -> None:
         "<b>Доступные команды:</b>\n"
         "• /start - начать работу с ботом\n"
         "• /help - показать эту справку\n\n"
-        "Если у вас есть вопросы, обратитесь к создателю @kolo_id",
+        "Если у вас есть вопросы, обратитесь к создателю @kolo_id\n\n"
+        "<i>made by kolo</i>",
         parse_mode="HTML",
         disable_web_page_preview=True,
     )

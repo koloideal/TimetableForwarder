@@ -7,6 +7,7 @@ class Config:
     bot_token: str
     database_url: str
     creator_id: int
+    channel_id: int
     plpx_key: str
     groups: list[int]
 
@@ -28,5 +29,6 @@ def load_config() -> Config:
         database_url=database_url,
         plpx_key=external_config["pplx_api_key"],
         creator_id=bot_config["creator_id"],
+        channel_id=bot_config["channel_id"],
         groups=groups_config["list"]
     )
