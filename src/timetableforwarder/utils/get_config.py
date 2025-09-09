@@ -21,7 +21,7 @@ def load_config() -> Config:
     postgres_password = os.environ["POSTGRES_PASSWORD"]
     postgres_user = os.environ["POSTGRES_USER"]
     postgres_db = os.environ["POSTGRES_DB"]
-    database_url = f"postgresql+psycopg://{postgres_user}:{postgres_password}@db:5432/{postgres_db}"
+    database_url = f"postgresql+asyncpg://{postgres_user}:{postgres_password}@localhost:5432/{postgres_db}"
 
     return Config(
         bot_token=bot_token,
