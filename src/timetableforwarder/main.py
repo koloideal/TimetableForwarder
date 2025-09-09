@@ -3,6 +3,7 @@ import sys
 from aiogram.client.session.aiohttp import AiohttpSession
 from dishka import make_async_container
 from dishka.integrations.aiogram import setup_dishka
+from timetableforwarder.utils.set_commands import set_commands
 from timetableforwarder.utils.make_dirs import make_dirs
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.bot import DefaultBotProperties
@@ -38,6 +39,7 @@ async def main() -> None:
     dp.include_router(router)
 
     setup_dishka(router=dp, container=container, auto_inject=True)
+    await set_commands(bot, config)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)

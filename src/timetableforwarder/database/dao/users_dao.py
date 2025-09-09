@@ -2,6 +2,7 @@ from typing import Optional
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from timetableforwarder.database.database_models import User
 
@@ -15,17 +16,17 @@ class UsersDAO:
         username: Optional[str] = None,
         is_subscribed: bool = False,
         subscribed_group: Optional[int] = None,
-    ) -> User:
-        new_user = User(
+    ) -> None:
+        stmt = pg_insert(User).values(
             user_id=user_id,
             username=username,
             is_subscribed=is_subscribed,
             subscribed_group=subscribed_group,
+        ).on_conflict_do_nothing(
+            index_elements=['user_id'] 
         )
-        self.session.add(new_user)
+        await self.session.execute(stmt)
         await self.session.commit()
-        await self.session.refresh(new_user)
-        return new_user
 
     async def get_user_by_id(self, user_id: int) -> Optional[User]:
         query = select(User).where(User.user_id == user_id)

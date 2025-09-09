@@ -5,6 +5,7 @@ from aiogram.filters import Command
 from dishka.integrations.aiogram import FromDishka
 
 from timetableforwarder.database.dao.users_dao import UsersDAO
+from timetableforwarder.handlers.routers_for_admin.get_list_of_banned import get_list_of_banned
 from timetableforwarder.handlers.routers_for_admin.wait_username_ban_user import get_username_for_ban_user_rout
 from timetableforwarder.handlers.routers_for_admin.wait_username_unban_user import get_username_for_unban_user_rout
 from timetableforwarder.handlers.routers_for_all.rout_help import help_rout
@@ -39,12 +40,16 @@ async def unban_user_routing(message: Message, state: FSMContext) -> None:
 
 @router.message(AdminState.waiting_for_ban_user)
 async def get_username_for_ban_user(message: Message, state: FSMContext, users_dao: FromDishka[UsersDAO]) -> None:
-    await get_username_for_ban_user_rout(message, state)
+    await get_username_for_ban_user_rout(message, state, users_dao)
 
 
 @router.message(AdminState.waiting_for_unban_user)
 async def get_username_for_unban_user(message: Message, state: FSMContext, users_dao: FromDishka[UsersDAO]) -> None:
-    await get_username_for_unban_user_rout(message, state)
+    await get_username_for_unban_user_rout(message, state, users_dao)
+
+@router.message(Command("list_banned"))
+async def get_list_of_banned_routing(message: Message, users_dao: FromDishka[UsersDAO]) -> None:
+    await get_list_of_banned(message, users_dao)
 
 @router.message()
 async def unknown_command_routing(message: Message) -> None:

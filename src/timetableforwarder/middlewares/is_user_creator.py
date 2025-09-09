@@ -20,7 +20,7 @@ class RejectNotCreatorMiddleware(BaseMiddleware):
         
         user_id: int = event.from_user.id
 
-        creator_commands = ['/ban_user', '/unban_user']
+        creator_commands = ['/ban_user', '/unban_user', '/list_banned']
 
         if event.text.strip() in creator_commands:
             if user_id == creator_id:

@@ -15,7 +15,7 @@ async def start_rout(message: Message, users_dao: UsersDAO) -> None:
     user_case: bool = user_id != creator_id
 
     if creator_case:
-        await message.answer("Hello admin")
+        await message.answer("Hello creator")
 
     elif user_case:
         await message.answer(
@@ -23,7 +23,7 @@ async def start_rout(message: Message, users_dao: UsersDAO) -> None:
             disable_web_page_preview=True,
         )
 
-    users_dao.create_user(
+    await users_dao.create_user(
         user_id=user_id,
         username=username
     )
