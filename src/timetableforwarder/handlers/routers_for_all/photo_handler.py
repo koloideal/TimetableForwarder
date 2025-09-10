@@ -5,5 +5,9 @@ config: Config = load_config()
 
 
 async def handle_channel_photo(message: Message) -> None:
-    if message.chat.id == config.channel_id and not message.caption:
-        print("Photo from channel")
+    if message.caption:
+        return
+    
+    await message.answer("🎓 <b>Расписание</b>\n\n"
+                         "🔍 <b>Расписание</b>\n\n"
+                         "🔍 <b>Расписание</b>\n\n")
