@@ -25,7 +25,7 @@ def _serialize_selected(selected: set[int]) -> str | None:
 
 def _build_groups_kb(selected: set[int], off_selected: bool) -> InlineKeyboardMarkup:
     rows = []
-    groups = config.groups
+    groups = load_config().groups
     i = 0
     while i < len(groups):
         first = groups[i]

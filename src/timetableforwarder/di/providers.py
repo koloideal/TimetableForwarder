@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import (
 from dishka import Provider, provide, Scope
 
 from timetableforwarder.database.dao.users_dao import UsersDAO
+from timetableforwarder.database.dao.subscribed_groups_dao import SubscribedGroupsDAO
 from timetableforwarder.utils.get_config import load_config, Config
 
 
@@ -38,3 +39,6 @@ class DAOProvider(Provider):
     def get_users_dao(self, session: AsyncSession) -> UsersDAO:
         return UsersDAO(session)
 
+    @provide(scope=Scope.REQUEST)
+    def get_subscribed_groups_dao(self, session: AsyncSession) -> SubscribedGroupsDAO:
+        return SubscribedGroupsDAO(session)

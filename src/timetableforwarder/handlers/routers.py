@@ -15,6 +15,7 @@ from timetableforwarder.handlers.routers_for_admin.ban_or_unban_user_rout import
 from timetableforwarder.handlers.routers_for_all.unknown_command import unknown_command
 from timetableforwarder.handlers.routers_for_all.subscriptions import open_config, select_group, select_off, go_back
 from timetableforwarder.handlers.routers_for_all.photo_handler import handle_channel_photo
+from timetableforwarder.handlers.routers_for_admin.del_group_flow import del_group_entry, del_group_select, del_group_yes, del_group_no, del_group_back
 from timetableforwarder.middlewares.is_user_blocked import RejectBlockedUserMiddleware
 from timetableforwarder.middlewares.is_user_creator import RejectNotCreatorMiddleware
 from timetableforwarder.states.admin_states import AdminState
@@ -33,6 +34,10 @@ async def start_routing(message: Message, users_dao: FromDishka[UsersDAO]) -> No
 @router.message(Command("help"))
 async def help_routing(message: Message) -> None:
     await help_rout(message)
+
+@router.message(Command("del_group"))
+async def del_group_cmd(message: Message) -> None:
+    await del_group_entry(message)
 
 @router.message(Command("ban_user"))
 async def ban_user_routing(message: Message, state: FSMContext) -> None:
@@ -74,6 +79,29 @@ async def cfg_off_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO]) ->
 @router.callback_query(F.data == "cfg_back")
 async def cfg_back_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO]) -> None:
     await go_back(cb, users_dao)
+
+@router.callback_query(F.data == "del_open")
+async def del_open_routing(cb: CallbackQuery) -> None:
+    await del_group_entry(cb.message)
+    await cb.answer()
+
+@router.callback_query(F.data.startswith("del_grp:"))
+async def del_select_routing(cb: CallbackQuery) -> None:
+    group = int(cb.data.split(":", 1)[1])
+    await del_group_select(cb, group)
+
+@router.callback_query(F.data.startswith("del_yes:"))
+async def del_yes_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO]) -> None:
+    group = int(cb.data.split(":", 1)[1])
+    await del_group_yes(cb, group, users_dao)
+
+@router.callback_query(F.data == "del_no")
+async def del_no_routing(cb: CallbackQuery) -> None:
+    await del_group_no(cb)
+
+@router.callback_query(F.data == "del_return")
+async def del_return_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO]) -> None:
+    await del_group_back(cb, users_dao)
 
 @router.channel_post(F.chat.id == load_config().channel_id, F.photo)
 async def photo_routing(message: Message) -> None:
