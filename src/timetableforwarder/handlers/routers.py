@@ -13,11 +13,12 @@ from timetableforwarder.handlers.routers_for_all.rout_help import help_rout
 from timetableforwarder.handlers.routers_for_all.rout_start import start_rout
 from timetableforwarder.handlers.routers_for_admin.ban_or_unban_user_rout import ban_or_unban_user_rout
 from timetableforwarder.handlers.routers_for_all.unknown_command import unknown_command
-from timetableforwarder.handlers.routers_for_all.subscriptions import open_config, select_group, select_off
+from timetableforwarder.handlers.routers_for_all.subscriptions import open_config, select_group, select_off, go_back
 from timetableforwarder.handlers.routers_for_all.photo_handler import handle_channel_photo
 from timetableforwarder.middlewares.is_user_blocked import RejectBlockedUserMiddleware
 from timetableforwarder.middlewares.is_user_creator import RejectNotCreatorMiddleware
 from timetableforwarder.states.admin_states import AdminState
+from timetableforwarder.utils.get_config import load_config
 
 
 router: Router = Router()
@@ -70,7 +71,11 @@ async def cfg_group_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO]) 
 async def cfg_off_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO]) -> None:
     await select_off(cb, users_dao)
 
-@router.channel_post(F.chat.id == TARGET_CHANNEL_ID, F.photo)
+@router.callback_query(F.data == "cfg_back")
+async def cfg_back_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO]) -> None:
+    await go_back(cb, users_dao)
+
+@router.channel_post(F.chat.id == load_config().channel_id, F.photo)
 async def photo_routing(message: Message) -> None:
     await handle_channel_photo(message)
 

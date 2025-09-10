@@ -14,12 +14,12 @@ class UsersDAO:
         self,
         user_id: int,
         username: Optional[str] = None,
-        subscribed_group: Optional[int] = None,
+        subscribed_groups: Optional[str] = None,
     ) -> None:
         stmt = pg_insert(User).values(
             user_id=user_id,
             username=username,
-            subscribed_group=subscribed_group,
+            subscribed_groups=subscribed_groups,
         ).on_conflict_do_nothing(
             index_elements=['user_id'] 
         )

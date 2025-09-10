@@ -18,7 +18,7 @@ class User(Base):
     user_id = Column(BigInteger, nullable=False, unique=True)
     username = Column(String, nullable=True)
     is_banned = Column(Boolean, nullable=False, default=False, server_default=false())
-    subscribed_group = Column(Integer, nullable=True)
+    subscribed_groups = Column(String, nullable=True)
 
 
 class SubscribedGroup(Base):
