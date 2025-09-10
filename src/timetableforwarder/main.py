@@ -13,7 +13,8 @@ import asyncio
 
 from timetableforwarder.di.providers import SQLAlchemyProvider, DAOProvider, ConfigProvider
 from timetableforwarder.utils.get_config import Config, load_config
-from timetableforwarder.handlers.routers import router
+from timetableforwarder.handlers.main_routers import main_router
+from timetableforwarder.handlers.group_router import group_router
 from timetableforwarder.utils.create_loggers import create_main_logger, create_action_logger
 
 
@@ -36,8 +37,9 @@ async def main() -> None:
 
     main_logger.warning("Starting TimetableForwarder...")
     action_logger.critical("Starting logging actions...")
-    dp.include_router(router)
-
+    dp.include_router(main_router)
+    dp.include_router(group_router)
+    
     setup_dishka(router=dp, container=container, auto_inject=True)
     await set_commands(bot, config)
 
