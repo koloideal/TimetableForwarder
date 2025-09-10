@@ -6,3 +6,5 @@ class AdminState(StatesGroup):
     waiting_for_del_admin: State = State()
     waiting_for_ban_user: State = State()
     waiting_for_unban_user: State = State()
+    waiting_for_add_group: State = State()
+    waiting_for_mailing: State = State()

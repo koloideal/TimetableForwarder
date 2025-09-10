@@ -14,7 +14,7 @@ class RejectBlockedUserMiddleware(BaseMiddleware):
             data: Dict[str, Any]
     ) -> Any:
         if not event.text:
-            return
+            return await handler(event, data)
         
         users_dao = await data["dishka_container"].get(UsersDAO)
         banned_users: list[User] = await users_dao.get_banned_users()

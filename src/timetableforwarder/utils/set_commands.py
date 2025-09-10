@@ -18,6 +18,8 @@ async def set_commands(bot: Bot, config: Config):
         BotCommand(command="list_banned", description="📜 Список заблокированных"),
         BotCommand(command="list_all_users", description="👥 Список всех пользователей"),
         BotCommand(command="del_group", description="🗑 Удалить группу"),
+        BotCommand(command="add_group", description="➕ Добавить группу"),
+        BotCommand(command="mailing", description="📣 Рассылка"),
     ]
 
     await bot.set_my_commands(

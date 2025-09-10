@@ -16,10 +16,12 @@ from timetableforwarder.handlers.routers_for_all.unknown_command import unknown_
 from timetableforwarder.handlers.routers_for_all.subscriptions import open_config, select_group, select_off, go_back
 from timetableforwarder.handlers.routers_for_all.photo_handler import handle_channel_photo
 from timetableforwarder.handlers.routers_for_admin.del_group_flow import del_group_entry, del_group_select, del_group_yes, del_group_no, del_group_back
+from timetableforwarder.handlers.routers_for_admin.mailing_flow import mailing_cmd, mailing_receive, mailing_send, mailing_cancel
+from timetableforwarder.handlers.routers_for_admin.add_group_flow import add_group_cmd, add_group_receive
 from timetableforwarder.middlewares.is_user_blocked import RejectBlockedUserMiddleware
 from timetableforwarder.middlewares.is_user_creator import RejectNotCreatorMiddleware
 from timetableforwarder.states.admin_states import AdminState
-from timetableforwarder.utils.get_config import load_config
+from timetableforwarder.utils.get_config import load_config, Config
 
 
 router: Router = Router()
@@ -38,6 +40,14 @@ async def help_routing(message: Message) -> None:
 @router.message(Command("del_group"))
 async def del_group_cmd(message: Message) -> None:
     await del_group_entry(message)
+
+@router.message(Command("add_group"))
+async def add_group_command(message: Message, state: FSMContext) -> None:
+    await add_group_cmd(message, state)
+
+@router.message(Command("mailing"))
+async def mailing_command(message: Message, state: FSMContext) -> None:
+    await mailing_cmd(message, state)
 
 @router.message(Command("ban_user"))
 async def ban_user_routing(message: Message, state: FSMContext) -> None:
@@ -106,6 +116,22 @@ async def del_return_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO])
 @router.channel_post(F.chat.id == load_config().channel_id, F.photo)
 async def photo_routing(message: Message) -> None:
     await handle_channel_photo(message)
+
+@router.message(AdminState.waiting_for_mailing)
+async def mailing_receive_routing(message: Message, state: FSMContext) -> None:
+    await mailing_receive(message, state)
+
+@router.callback_query(F.data == "mail_yes")
+async def mailing_yes_routing(cb: CallbackQuery, state: FSMContext, users_dao: FromDishka[UsersDAO], config: FromDishka[Config]) -> None:
+    await mailing_send(cb, state, users_dao, config)
+
+@router.callback_query(F.data == "mail_no")
+async def mailing_no_routing(cb: CallbackQuery, state: FSMContext, users_dao: FromDishka[UsersDAO]) -> None:
+    await mailing_cancel(cb, state, users_dao)
+    
+@router.message(AdminState.waiting_for_add_group)
+async def add_group_receive_routing(message: Message, state: FSMContext) -> None:
+    await add_group_receive(message, state)
 
 @router.message()
 async def unknown_command_routing(message: Message) -> None:

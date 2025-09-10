@@ -16,11 +16,11 @@ class RejectNotCreatorMiddleware(BaseMiddleware):
             data: Dict[str, Any]
     ) -> Any:
         if not event.text:
-            return
+            return await handler(event, data)
         
         user_id: int = event.from_user.id
 
-        creator_commands = ['/ban_user', '/unban_user', '/list_banned', '/list_all_users', '/del_group']
+        creator_commands = ['/ban_user', '/unban_user', '/list_banned', '/list_all_users', '/del_group', '/add_group', '/mailing']
 
         if event.text.strip() in creator_commands:
             if user_id == creator_id:

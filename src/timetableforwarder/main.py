@@ -11,7 +11,7 @@ from aiogram.enums.parse_mode import ParseMode
 from aiogram import Bot, Dispatcher
 import asyncio
 
-from timetableforwarder.di.providers import SQLAlchemyProvider, DAOProvider
+from timetableforwarder.di.providers import SQLAlchemyProvider, DAOProvider, ConfigProvider
 from timetableforwarder.utils.get_config import Config, load_config
 from timetableforwarder.handlers.routers import router
 from timetableforwarder.utils.create_loggers import create_main_logger, create_action_logger
@@ -28,7 +28,7 @@ dp: Dispatcher = Dispatcher(storage=storage)
 main_logger: Logger = create_main_logger()
 action_logger: Logger = create_action_logger()
 
-container = make_async_container(SQLAlchemyProvider(), DAOProvider())
+container = make_async_container(SQLAlchemyProvider(), DAOProvider(), ConfigProvider())
 
 
 async def main() -> None:

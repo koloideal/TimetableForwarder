@@ -42,3 +42,10 @@ class DAOProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def get_subscribed_groups_dao(self, session: AsyncSession) -> SubscribedGroupsDAO:
         return SubscribedGroupsDAO(session)
+
+
+class ConfigProvider(Provider):
+    @provide(scope=Scope.APP)
+    def get_config(self) -> Config:
+        return load_config()
+        

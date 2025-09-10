@@ -19,20 +19,25 @@ class ImageToTextService:
         }
 
         prompt_text = """
-            Analyze the attached image, which contains a class schedule written in Russian.
-            Extract all information and return it as a single, minified JSON array. Do not include any text outside of the JSON.
-            Each object in the array should represent a single group's schedule and must follow this structure:
+            First, analyze the attached image to determine if it is a class schedule. The schedule is written in Russian.
+
+            If the image is NOT a class schedule, you MUST return only the following JSON object:
+            {"error": "Image does not contain a valid class schedule."}
+
+            If the image IS a class schedule, extract all its information and return it as a single, minified JSON array.
+            Each object in the array should represent one group's schedule and must follow this exact structure:
             {
             "group_info": "Group number and classroom (e.g., '1125, ауд. 43')",
             "lessons": [
                 {
                 "subject": "The name of the subject",
                 "teacher1": "The first teacher from the middle column, including any numbers",
-                "teacher2": "The second teacher from the far-right column (if present, otherwise empty string)"
+                "teacher2": "The second teacher from the far-right column (if present, otherwise an empty string)"
                 }
             ]
             }
-            Ensure all text values are extracted exactly as they appear in Russian.
+            
+            CRITICAL: Your entire response must be only the raw JSON, with no additional text, explanations, or markdown formatting like ```
         """
 
         payload = {

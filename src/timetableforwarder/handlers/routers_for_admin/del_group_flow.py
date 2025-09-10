@@ -43,11 +43,11 @@ def _kb_return() -> InlineKeyboardMarkup:
 
 
 async def del_group_entry(message: Message) -> None:
-    await message.answer("Какую группу хотите удалить?", reply_markup=_kb_groups_for_delete())
+    await message.answer("Какую группу хотите удалить? 🗑", reply_markup=_kb_groups_for_delete())
 
 
 async def del_group_select(cb: CallbackQuery, group: int) -> None:
-    await cb.message.edit_text(f"Точно хотите удалить группу <b>{group}</b>?", parse_mode='HTML')
+    await cb.message.edit_text(f"Точно хотите удалить группу <b>{group}</b>❓", parse_mode='HTML')
     await cb.message.edit_reply_markup(reply_markup=_kb_confirm(group))
     await cb.answer()
 
@@ -62,15 +62,15 @@ async def del_group_yes(cb: CallbackQuery, group: int, users_dao: UsersDAO) -> N
             await users_dao.update_user(user_id=user.user_id, subscribed_groups=filtered)
     ok = remove_group(group)
     if ok:
-        await cb.message.edit_text(f"Успешно удалена группа <b>{group}</b>", parse_mode='HTML')
+        await cb.message.edit_text(f"Успешно удалена группа <b>{group}</b> ✅", parse_mode='HTML')
     else:
-        await cb.message.edit_text(f"Группа <b>{group}</b> не найдена", parse_mode='HTML')
+        await cb.message.edit_text(f"Группа <b>{group}</b> не найдена ❌", parse_mode='HTML')
     await cb.message.edit_reply_markup(reply_markup=_kb_return())
     await cb.answer()
 
 
 async def del_group_no(cb: CallbackQuery) -> None:
-    await cb.message.edit_text("Какую группу хотите удалить?", parse_mode='HTML')
+    await cb.message.edit_text("Какую группу хотите удалить? 🗑", parse_mode='HTML')
     await cb.message.edit_reply_markup(reply_markup=_kb_groups_for_delete())
     await cb.answer()
 

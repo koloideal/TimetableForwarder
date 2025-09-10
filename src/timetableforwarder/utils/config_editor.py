@@ -27,3 +27,14 @@ def remove_group(group_id: int) -> bool:
     return True
 
 
+def add_group(group_id: int) -> bool:
+    data = read_config()
+    groups = data.setdefault("groups", {}).setdefault("list", [])
+    if group_id in groups:
+        return False
+    groups.append(group_id)
+    groups.sort()
+    write_config(data)
+    return True
+
+
