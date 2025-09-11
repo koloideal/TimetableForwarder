@@ -7,6 +7,7 @@ from dishka.integrations.aiogram import FromDishka
 from timetableforwarder.middlewares.is_admin_in_group_filter import IsAdminFilter 
 from timetableforwarder.database.dao.subscribed_groups_dao import SubscribedGroupsDAO
 from timetableforwarder.utils.get_config import Config
+from typing import Optional
 
 
 group_router = Router()
@@ -14,22 +15,25 @@ group_router.message.filter(F.chat.type.in_({ChatType.GROUP, ChatType.SUPERGROUP
 group_router.callback_query.filter(F.message.chat.type.in_({ChatType.GROUP, ChatType.SUPERGROUP}))
 
 
-def _build_groups_kb_single_choice(config: Config) -> InlineKeyboardMarkup:
+def _build_groups_kb_single_choice(config: Config, current_selected: Optional[int]) -> InlineKeyboardMarkup:
     rows = []
     groups = config.groups
     i = 0
     while i < len(groups):
         first = groups[i]
-        first_btn = InlineKeyboardButton(text=f"🎓 {first}", callback_data=f"grp_set:{first}")
+        first_suffix = " ✅" if current_selected == first else ""
+        first_btn = InlineKeyboardButton(text=f"🎓 {first}{first_suffix}", callback_data=f"grp_set:{first}")
         if i + 1 < len(groups):
             second = groups[i + 1]
-            second_btn = InlineKeyboardButton(text=f"🎓 {second}", callback_data=f"grp_set:{second}")
+            second_suffix = " ✅" if current_selected == second else ""
+            second_btn = InlineKeyboardButton(text=f"🎓 {second}{second_suffix}", callback_data=f"grp_set:{second}")
             rows.append([first_btn, second_btn])
             i += 2
         else:
             rows.append([first_btn])
             i += 1
-    rows.append([InlineKeyboardButton(text="🔕 Отключено", callback_data="grp_off")])
+    off_suffix = " ✅" if current_selected is None else ""
+    rows.append([InlineKeyboardButton(text=f"🔕 Отключено{off_suffix}", callback_data="grp_off")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -38,16 +42,17 @@ def _build_groups_kb_single_choice(config: Config) -> InlineKeyboardMarkup:
     IsAdminFilter()
 )
 async def set_group_handler(message: Message, subscribed_groups_dao: FromDishka[SubscribedGroupsDAO], config: FromDishka[Config]) -> None:
-    current_group: int = await subscribed_groups_dao.get_group_by_telegram_id(message.chat.id)
+    current_group_model = await subscribed_groups_dao.get_group_by_telegram_id(message.chat.id)
+    current_selected: Optional[int] = current_group_model.subscribed_group if current_group_model and current_group_model.subscribed_group else None
 
-    if current_group.subscribed_group:
-        result_text = f"<i>Выберите группу для пересылки расписания, текущая группа <b>{current_group.subscribed_group}</b>:</i>"
+    if current_selected is not None:
+        result_text = f"<i>Выберите группу для пересылки расписания, текущая группа <b>{current_selected}</b>:</i>"
     else:
         result_text = "<i>Выберите группу для пересылки расписания:</i>"
 
     await message.reply(
         result_text,
-        reply_markup=_build_groups_kb_single_choice(config)
+        reply_markup=_build_groups_kb_single_choice(config, current_selected)
     )
 
 
