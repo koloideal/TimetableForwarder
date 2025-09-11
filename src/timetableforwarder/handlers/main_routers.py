@@ -16,6 +16,7 @@ from timetableforwarder.handlers.routers_for_admin.ban_or_unban_user_rout import
 from timetableforwarder.handlers.routers_for_all.unknown_command import unknown_command
 from timetableforwarder.handlers.routers_for_all.subscriptions import open_config, select_group, select_off, go_back
 from timetableforwarder.handlers.routers_for_all.photo_handler import handle_channel_photo
+from timetableforwarder.database.dao.subscribed_groups_dao import SubscribedGroupsDAO
 from timetableforwarder.handlers.routers_for_admin.del_group_flow import del_group_entry, del_group_select, del_group_yes, del_group_no, del_group_back
 from timetableforwarder.handlers.routers_for_admin.mailing_flow import mailing_cmd, mailing_receive, mailing_send, mailing_cancel
 from timetableforwarder.handlers.routers_for_admin.add_group_flow import add_group_cmd, add_group_receive
@@ -116,8 +117,13 @@ async def del_return_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO])
     await del_group_back(cb, users_dao)
 
 @main_router.channel_post(F.chat.id == load_config().channel_id, F.photo, ~F.media_group_id)
-async def photo_routing(message: Message) -> None:
-    await handle_channel_photo(message)
+async def photo_routing(
+    message: Message,
+    users_dao: FromDishka[UsersDAO],
+    subscribed_groups_dao: FromDishka[SubscribedGroupsDAO],
+    config: FromDishka[Config],
+) -> None:
+    await handle_channel_photo(message, config, users_dao, subscribed_groups_dao)
 
 @main_router.message(AdminState.waiting_for_mailing)
 async def mailing_receive_routing(message: Message, state: FSMContext) -> None:

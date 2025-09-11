@@ -38,7 +38,7 @@ def _build_groups_kb_single_choice(config: Config, current_selected: Optional[in
 
 
 @group_router.message(
-    Command("set_group"),
+    Command("config_forwarding"),
     IsAdminFilter()
 )
 async def set_group_handler(message: Message, subscribed_groups_dao: FromDishka[SubscribedGroupsDAO], config: FromDishka[Config]) -> None:
