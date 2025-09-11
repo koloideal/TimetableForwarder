@@ -115,7 +115,7 @@ async def del_no_routing(cb: CallbackQuery) -> None:
 async def del_return_routing(cb: CallbackQuery, users_dao: FromDishka[UsersDAO]) -> None:
     await del_group_back(cb, users_dao)
 
-@main_router.channel_post(F.chat.id == load_config().channel_id, F.photo)
+@main_router.channel_post(F.chat.id == load_config().channel_id, F.photo, ~F.media_group_id)
 async def photo_routing(message: Message) -> None:
     await handle_channel_photo(message)
 
