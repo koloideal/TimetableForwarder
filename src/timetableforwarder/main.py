@@ -3,6 +3,7 @@ import sys
 from aiogram.client.session.aiohttp import AiohttpSession
 from dishka import make_async_container
 from dishka.integrations.aiogram import setup_dishka
+from timetableforwarder.utils.check_bot_rights import check_bot_rights
 from timetableforwarder.utils.set_commands import set_commands
 from timetableforwarder.utils.make_dirs import make_dirs
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -33,6 +34,9 @@ container = make_async_container(SQLAlchemyProvider(), DAOProvider(), ConfigProv
 
 
 async def main() -> None:
+    if not await check_bot_rights(bot, config):
+        raise PermissionError("Bot must be an admin in channel from witch it forwards")
+
     make_dirs()
 
     main_logger.warning("Starting TimetableForwarder...")

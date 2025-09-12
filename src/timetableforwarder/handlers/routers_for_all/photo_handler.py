@@ -18,8 +18,8 @@ def build_group_message(group: str, lessons: list[dict], date: str) -> str:
     for item in sorted(lessons, key=lambda x: x.get("position", 0)):
         name = item.get("name", "—")
         pos = item.get("position", 0)
-        lines.append(f"{pos}. 📘 <b>{name}</b>")
-    return header + f"<blockquote>\n{'\n'.join(lines)}\n</blockquote>"
+        lines.append(f"{pos}. <b>{name}</b>\n")
+    return header + f"<blockquote>{'\n'.join(lines)}</blockquote>\n"
 
 
 async def handle_channel_photo(
@@ -217,7 +217,11 @@ async def handle_channel_photo(
         texts = [group_to_text[g] for g in groups if g in group_to_text]
         if not texts:
             continue
-        final_text = "\n\n".join(texts)
+        if len(texts) == 1:
+            line_separate = '\n'
+        else:
+            line_separate = '\n\n'
+        final_text = "\n\n".join(texts) + f"{line_separate}<b><i>made by kolo</i></b>"
         try:
             await message.bot.send_message(
                 chat_id=user.user_id, text=final_text, parse_mode="HTML"
@@ -228,13 +232,12 @@ async def handle_channel_photo(
     subscribed_groups = await subscribed_groups_dao.get_all_groups()
 
     for rec in subscribed_groups:
-        target_group = rec.subscribed_group
+        target_group = str(rec.subscribed_group)
         chat_id = rec.group_id
         if not target_group:
             continue
         text = group_to_text.get(target_group)
-        if not text:
-            continue
+        text += "\n<b><i>made by kolo</i></b>"
         try:
             sent = await message.bot.send_message(
                 chat_id=chat_id, text=text, parse_mode="HTML"
