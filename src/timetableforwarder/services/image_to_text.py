@@ -1,99 +1,71 @@
 import json
-from httpx import AsyncClient
+import re
 import base64
+from httpx import AsyncClient
+import cv2
+import numpy as np
+
 from timetableforwarder.utils.get_config import Config, load_config
 
 
+def _find_table_rows(image_bytes: bytes) -> list[tuple[int, int, int, int]]:
+    image_np = np.frombuffer(image_bytes, np.uint8)
+    img = cv2.imdecode(image_np, cv2.IMREAD_GRAYSCALE)
+    
+    # 1. Инвертируем изображение, чтобы линии стали белыми, а фон черным
+    # Используем более мягкие параметры adaptiveThreshold
+    binary_inv = cv2.adaptiveThreshold(
+        img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15, 7
+    )
+    # --- ОТЛАДКА ---
+    # Раскомментируйте, чтобы увидеть результат бинаризации.
+    # Текст и линии должны быть белыми.
+    # cv2.imwrite('debug_binary.png', binary_inv)
+
+    # 2. Ищем горизонтальные линии. Делаем ядро чуть шире.
+    # Ширина ядра зависит от ширины изображения, что делает его более гибким.
+    horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (img.shape[1] // 30, 1))
+    detected_horizontal = cv2.morphologyEx(binary_inv, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
+    
+    # --- ОТЛАДКА ---
+    # Раскомментируйте, чтобы увидеть найденные линии.
+    # В этом файле вы должны увидеть только белые горизонтальные линии таблицы.
+    # cv2.imwrite('debug_lines.png', detected_horizontal)
+
+    contours, _ = cv2.findContours(detected_horizontal, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    if not contours:
+        return []
+
+    sorted_contours = sorted(contours, key=lambda c: cv2.boundingRect(c)[1])
+    
+    row_boxes = []
+    # Определяем границы строк по промежуткам между найденными линиями
+    for i in range(len(sorted_contours) - 1):
+        y1_box = cv2.boundingRect(sorted_contours[i])
+        y2_box = cv2.boundingRect(sorted_contours[i+1])
+        
+        row_y = y1_box[1] + y1_box[3] # y-координата начала строки
+        row_h = y2_box[1] - row_y      # высота строки
+        
+        # Фильтруем слишком маленькие промежутки (шум)
+        if row_h > 15: 
+            row_boxes.append((0, row_y, img.shape[1], row_h))
+
+    return row_boxes
+
 class ImageToTextService:
-    def __init__(
-        self, api_key: str, api_url: str = "https://api.perplexity.ai/chat/completions"
-    ):
+    def __init__(self, api_key: str, api_url: str = "https://api.perplexity.ai/chat/completions"):
         self._api_key = api_key
         self._api_url = api_url
-
-    async def converting_image_to_text(
-        self, image_path: str
-    ) -> list[dict[str, str | list[dict[str, str | int]]]]:
-        with open(image_path, "rb") as f:
-            image_bytes = f.read()
-        image_base64 = base64.b64encode(image_bytes).decode("utf-8")
-
-        config: Config = load_config()
-        all_possible_groups: list[int] = config.groups
-
-        headers = {
+        self._headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self._api_key}",
         }
 
-        prompt_text = f"""
-            You are an expert in structured data extraction from images.
-            Your task is to analyze an image of a class schedule and generate a single, valid JSON object that strictly follows the specified structure.
-
-            **Instructions:**
-
-            1.  **Extract the Date:** Find the date in the image's main header (e.g., "НА 06.09.2025") and format it as "DD.MM.YYYY".
-            2.  **Target Groups:** Process only the groups whose numbers are listed here: `{all_possible_groups}`. Completely ignore all other groups in the image.
-            3.  **Data Extraction for Each Group:**
-                *   The **group number** is in the first column.
-                *   The **list of subjects** is in the second column (labeled "Расписание").
-                *   The **audience number** is a two-digit number typically found in the columns to the right of the subject list. It might be next to a teacher's name. If a two-digit audience number for a lesson cannot be found, you must use the string value `"not found"`.
-            4.  **JSON Formatting:**
-                *   Your entire output must be a single JSON object.
-                *   This object must have a root key `"date"` containing the extracted date string.
-                *   The second root key must be `"timetable"`, containing a list of dictionaries. Each dictionary in this list corresponds to a single group.
-                *   Each group dictionary must contain:
-                    *   `"group"`: The group number as a string.
-                    *   `"lessons"`: A list of lesson dictionaries.
-                *   Each lesson dictionary must contain:
-                    *   `"position"`: The lesson's sequential number (1, 2, etc.) as an integer.
-                    *   `"name"`: The subject's name as a string.
-                    *   `"audience"`: The two-digit audience number as a string, or `"not found"` if it's missing.
-            5.  **What to Ignore:** You are strictly forbidden from including any extraneous information in the JSON, such as names of teachers or curators (e.g., "[translate:Боровик О.В.]", "[translate:куратор]").
-
-            **Example of the required JSON structure:**
-
-            {
-                "date": "06.09.2025",
-                "timetable": [
-                {
-                "group": "1125",
-                "lessons": [
-                {
-                "position": 1,
-                "name": "Физика",
-                "audience": "not found"
-                },
-                {
-                "position": 2,
-                "name": "Математика",
-                "audience": "37"
-                }
-                ]
-                },
-                {
-                "group": "2125",
-                "lessons": [
-                {
-                "position": 1,
-                "name": "Русский язык",
-                "audience": "not found"
-                },
-                {
-                "position": 2,
-                "name": "Физика",
-                "audience": "43"
-                }
-                ]
-                }
-                ]
-            }
-
-            text
-
-            **Final Output:**
-            Provide **only** the JSON object as your response, without any comments, explanations, or introductory text.
-        """
+    async def _recognize_text_from_cell(self, cell_image: np.ndarray, client: AsyncClient) -> str:
+        _, buffer = cv2.imencode('.png', cell_image)
+        image_base64 = base64.b64encode(buffer).decode("utf-8")
 
         payload = {
             "model": "sonar-pro",
@@ -101,27 +73,75 @@ class ImageToTextService:
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": prompt_text},
+                        {"type": "text", "text": "Extract all text from this image as accurately as possible. Provide only the text."},
                         {
                             "type": "image_url",
-                            "image_url": {
-                                "url": f"data:image/jpeg;base64,{image_base64}"
-                            },
+                            "image_url": {"url": f"data:image/png;base64,{image_base64}"},
                         },
                     ],
                 }
             ],
-            "max_tokens": 4000,
+            "max_tokens": 500,
         }
 
+        response = await client.post(self._api_url, json=payload, headers=self._headers)
+        response.raise_for_status()
+        api_response = response.json()
+        return api_response["choices"][0]["message"]["content"].strip()
+
+    async def converting_image_to_text(self, image_bytes: bytes) -> dict:
+        config: Config = load_config()
+        all_possible_groups = config.groups
+
+        full_image_np = np.frombuffer(image_bytes, np.uint8)
+        full_image = cv2.imdecode(full_image_np, cv2.IMREAD_COLOR)
+
+        row_boxes = _find_table_rows(image_bytes)
+        print(row_boxes)
+        exit(1)
+        final_json = {"date": "not found", "timetable": []}
+
         async with AsyncClient(timeout=120.0) as client:
-            response = await client.post(self._api_url, json=payload, headers=headers)
-            response.raise_for_status()
+            header_img = full_image[0:50, :]
+            header_text = await self._recognize_text_from_cell(header_img, client)
+            date_match = re.search(r'\d{2}\.\d{2}\.\d{4}', header_text)
+            if date_match:
+                final_json["date"] = date_match.group(0)
 
-            api_response = response.json()
-            content_str = api_response["choices"][0]["message"]["content"]
+            for x, y, w, h in row_boxes:
+                row_img = full_image[y:y+h, x:x+w]
+                
+                group_cell = row_img[:, 0:int(w*0.20)]
+                schedule_cell = row_img[:, int(w*0.20):int(w*0.60)]
+                rooms_cell = row_img[:, int(w*0.60):]
 
-            if content_str.startswith("```"):
-                content_str = content_str[7:-3].strip()
+                group_text = await self._recognize_text_from_cell(group_cell, client)
+                group_match = re.search(r'\b(\d{4})\b', group_text)
 
-            return json.loads(content_str)
+                if not group_match or int(group_match.group(1)) not in all_possible_groups:
+                    continue
+
+                group_number = group_match.group(1)
+                schedule_text = await self._recognize_text_from_cell(schedule_cell, client)
+                rooms_text = await self._recognize_text_from_cell(rooms_cell, client)
+
+                found_audiences = re.findall(r'\b(\d{2,3})\b', rooms_text)
+                
+                lessons = []
+                lesson_lines = re.findall(r'(\d+)\.\s*(.+)', schedule_text)
+
+                for i, (pos, name) in enumerate(lesson_lines):
+                    audience = found_audiences[i] if i < len(found_audiences) else "not found"
+                    lessons.append({
+                        "position": int(pos),
+                        "name": name.strip(),
+                        "audience": audience
+                    })
+
+                if lessons:
+                    final_json["timetable"].append({
+                        "group": group_number,
+                        "lessons": lessons
+                    })
+
+        return final_json

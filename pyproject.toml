@@ -14,3 +14,9 @@ dependencies = [
     "tomli>=2.0.1",
     "tomli-w>=1.2.0",
 ]
+
+[dependency-groups]
+dev = [
+    "numpy>=2.3.3",
+    "opencv-python>=4.11.0.86",
+]
