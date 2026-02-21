@@ -1,7 +1,7 @@
 [project]
 name = "timetableforwarder"
 version = "0.1.0"
-description = "Timetable forwarder from NGAEK"
+description = "Timetable forwarder for NGAEK"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -22,3 +22,7 @@ dev = [
     "opencv-python>=4.11.0.86",
     "requests>=2.32.5",
 ]
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
